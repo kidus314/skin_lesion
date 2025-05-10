@@ -7,7 +7,9 @@ from PIL import Image
 import io
 
 app = FastAPI()
-
+@app.get("/")
+def read_root():
+    return {"message": "Hello, everyone this is the the skin lesion detection app!"}
 # Load the TFLite model
 MODEL_PATH = "model.tflite"
 interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
@@ -45,4 +47,6 @@ async def predict(file: UploadFile = File(...)):
     return {"lesion_type": lesion_type, "confidence": confidence}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))  # Default to 8000 if $PORT is not set
+    uvicorn.run(app, host="0.0.0.0", port=port)  # Bind to port dynamically
